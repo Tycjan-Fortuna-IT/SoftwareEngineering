@@ -1,0 +1,11 @@
+#
+#   Apache environmental config file.
+#   Section below redirects all requests from root folder to public/ folder, recursively.
+#
+
+
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
