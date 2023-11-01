@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -42,4 +43,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the route key.
+     *
+     * @return string
+     */
+    public function getRouteKeyName() : string
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Standard boot function for defining proper action handling.
+     *
+     * @return void
+     */
+    public static function boot() : void
+    {
+        parent::boot();
+
+        static::creating(function (User $user) {
+            $user->uuid = Str::uuid();
+        });
+    }
 }
