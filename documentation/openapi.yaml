@@ -1,0 +1,274 @@
+openapi: 3.1.0
+info:
+  title: 'Software Engineering API'
+  contact:
+    email: 242213@edu.p.lodz.pl
+  version: 1.0.0
+servers:
+  -
+    url: 'https://se-test-server.it-core.fun'
+    description: 'Test server for SE 2023/2024'
+paths:
+  /api/register:
+    post:
+      tags:
+        - Authentication
+      summary: 'Create and register a new user'
+      description: 'Create a new user and register the user into the system. Before sending this request, you also need to retrieve a cookie with CSRF token (see later in the section: /api/sanctum/csrf-cookie).'
+      operationId: 628bc9b0cf358dd0bc0777b8e80311c3
+      requestBody:
+        description: 'Data needed for registration of the user'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  example: coolname123
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                  example: jane.roe@gmail.com
+                password:
+                  type: string
+                  format: password
+                  maxLength: 255
+                  minLength: 8
+                  example: strongpassword123
+                password_confirmation:
+                  type: string
+                  format: password
+                  maxLength: 255
+                  minLength: 8
+                  example: strongpassword123
+              type: object
+      responses:
+        '204':
+          description: 'User has been registered successfully'
+        '422':
+          description: 'There was a validation error'
+  /api/login:
+    post:
+      tags:
+        - Authentication
+      summary: 'Sign in to the system'
+      description: 'Sign in to the system and start a session. Before sending this request, you also need to retrieve a cookie with CSRF token (see later in the section: /api/sanctum/csrf-cookie).'
+      operationId: ad4049f968af4d3f293c52fc8d2a53cf
+      requestBody:
+        description: 'Data needed for signing in and starting a session'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                  example: jane.roe@gmail.com
+                password:
+                  type: string
+                  format: password
+                  maxLength: 255
+                  minLength: 8
+                  example: strongpassword123
+              type: object
+      responses:
+        '204':
+          description: 'User has been signed in successfully'
+        '422':
+          description: 'There was a validation error'
+  /api/logout:
+    post:
+      tags:
+        - Authentication
+      summary: 'Sign out of the system'
+      description: 'Sign out of the system and close the session.'
+      operationId: 6fa02cb87f35edc7bfb6046b0bae2f6b
+      responses:
+        '204':
+          description: 'User has been signed out successfully'
+  /api/user:
+    get:
+      tags:
+        - Authentication
+      summary: 'Retrieve currently signed in user'
+      description: 'Retrieve details about the currently signed in user.'
+      operationId: e2744e00adeb069eb1480a8f4c6a6a3d
+      responses:
+        '200':
+          description: 'User data obtained from the system'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/UserResource' }
+                type: object
+  /api/sanctum/csrf-cookie:
+    get:
+      tags:
+        - Authentication
+      summary: 'Retrieve a cookie with CSRF token'
+      operationId: 368adad8c50ec01e47d5504d2d8eeda8
+      responses:
+        '204':
+          description: 'Cookie has been set successfully'
+components:
+  schemas:
+    LinksResponsePart:
+      title: LinksResponsePart
+      description: 'A part of successfully paginated response that contains links to other pages.'
+      properties:
+        first:
+          type: string
+          example: 'http://localhost:8000/api/users?page=1'
+        last:
+          type: string
+          example: 'http://localhost:8000/api/users?page=15'
+        prev:
+          type: string
+          example: 'http://localhost:8000/api/users?page=4'
+        next:
+          type: string
+          example: 'http://localhost:8000/api/users?page=6'
+      type: object
+    MetaResponsePart:
+      title: MetaResponsePart
+      description: 'A part of successfully paginated response that contains metadata.'
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        from:
+          type: integer
+          example: 1
+        last_page:
+          type: integer
+          example: 15
+        per_page:
+          type: integer
+          example: 15
+        to:
+          type: integer
+          example: 15
+        total:
+          type: integer
+          example: 15
+        path:
+          type: string
+          example: 'http://localhost:8000/api/users'
+        links:
+          type: array
+          items:
+            properties:
+              url:
+                type: string
+                example: 'http://localhost:8000/api/users?page=1'
+              label:
+                type: string
+                example: '1'
+              active:
+                type: boolean
+                example: true
+            type: object
+      type: object
+    UserResource:
+      title: UserResource
+      description: 'Registered user that uses the system'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          example: 04776536-c79c-4baa-a3ba-db945d70c902
+        name:
+          type: string
+          maxLength: 255
+          example: 'Jane Roe'
+        email:
+          description: 'Has to be lowercase'
+          type: string
+          format: email
+          maxLength: 255
+          example: jane.roe@gmail.com
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-10-29T15:25:45.000000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2023-10-29T15:25:45.000000Z'
+      type: object
+  parameters:
+    uuid_url_param:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: 04776536-c79c-4baa-a3ba-db945d70c902
+    filter_by_user_uuid_param:
+      name: 'filter[user_uuid]'
+      in: query
+      description: 'Allows for filtering resources by the UUID of the user'
+      required: false
+      schema:
+        type: string
+        format: uuid
+        example: 04776536-c79c-4baa-a3ba-db945d70c902
+    filter_by_user_uuid_param_required:
+      name: 'filter[user_uuid]'
+      in: query
+      description: 'Allows for filtering resources by the UUID of the user'
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: 04776536-c79c-4baa-a3ba-db945d70c902
+    filter_by_type_param:
+      name: 'filter[type]'
+      in: query
+      description: 'Allows for filtering resources by their exact type'
+      required: false
+      schema:
+        type: integer
+        format: int32
+        example: 1
+    page:
+      name: page
+      in: query
+      description: 'If pagination is enabled, returns a specified page of the data resources'
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 1
+    per_page:
+      name: per_page
+      in: query
+      description: 'If pagination is enabled, returns a specified number of data resources per page'
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 15
+    paginate:
+      name: paginate
+      in: query
+      description: 'If pagination is enabled, returns paginated data resources'
+      required: false
+      schema:
+        type: boolean
+        default: true
