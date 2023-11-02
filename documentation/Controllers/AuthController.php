@@ -1,6 +1,6 @@
 <?php   
 
-namespace Documentaation\Controllers;
+namespace Documentation\Controllers;
 
 use OpenApi\Attributes as OA;
 
@@ -9,7 +9,7 @@ class AuthController
     #[OA\Post(
         path:'/api/register',
         summary: 'Create and register a new user',
-        description: 'Create a new user and register the user into the system. // Cookie',
+        description: 'Create a new user and register the user into the system. To complete this action, you also need to retrieve a cookie (see later in the section: /api/sanctum/csrf-cookie).',
         tags: ['Authentication'],
         requestBody:
             new OA\RequestBody(
@@ -17,20 +17,20 @@ class AuthController
                 description: 'Data needed for registration of the user',
                 content: 
                     new OA\JsonContent(type: "object", required: ["nickname", "email", "password", "password_confirmation"], properties: [
-                        new OA\Property(property: "nickname", type: "string", minLength: 3, maxLength: 255, examples: "coolnickname123"),
-                        new OA\Property(property: "email", type: "string", maxLength: 255, examples: "jane.roe@gmail.com"),
-                        new OA\Property(property: "password", type: "string", minLength: 8, maxLength: 255, examples: "strongpassword123"),
-                        new OA\Property(property: "password_confirmation", type: "string", minLength: 8, maxLength: 255, examples: "strongpassword123"),
+                        new OA\Property(property: "name", type: "string", pattern: '(^[a-z])([a-z]|[0-9])*', maxLength: 255, example: "coolname123"),
+                        new OA\Property(property: "email", type: "string", format: "email", maxLength: 255, example: "jane.roe@gmail.com"),
+                        new OA\Property(property: "password", type: "string", format: "password", minLength: 8, maxLength: 255, example: "strongpassword123"),
+                        new OA\Property(property: "password_confirmation", type: "string", format: "password", minLength: 8, maxLength: 255, example: "strongpassword123"),
                     ])
             ),
         responses: [
             new OA\Response(
-                response: '201',
-                description: 'User'
+                response: '204',
+                description: 'User has been registered successfully'
             ),
             new OA\Response(
-                response: '',
-                description: ''
+                response: '422',
+                description: 'There was a validation error'
             )
         ]
     )]
@@ -39,25 +39,27 @@ class AuthController
 
     #[OA\Post(
         path:'/api/login',
-        summary: '',
+        summary: 'Sign in to the system',
+        description: 'Sign to the system and start a session. To complete this action, you also need to retrieve a cookie (see later in the section: /api/sanctum/csrf-cookie).',
         tags: ['Authentication'],
         requestBody:
             new OA\RequestBody(
                 required: true,
-                description: '',
+                description: 'Data needed for signing in and starting a session',
                 content: 
-                    new OA\JsonContent(type: "", required: ["", ""], properties: [
-                        new OA\Property(property: "", type: "", minLength: , maxLength: , examples: ""),
+                    new OA\JsonContent(type: "object", required: ["email", "password"], properties: [
+                        new OA\Property(property: "email", type: "string", format: "email", maxLength: 255, example: "jane.roe@gmail.com"),
+                        new OA\Property(property: "password", type: "string", format: "password", minLength: 8, maxLength: 255, example: "strongpassword123")
                     ])
             ),
         responses: [
             new OA\Response(
-                response: '',
-                description: ''
+                response: '204',
+                description: 'User has been signed in successfully'
             ),
             new OA\Response(
-                response: '',
-                description: ''
+                response: '422',
+                description: 'There was a validation error'
             )
         ]
     )]
@@ -65,25 +67,13 @@ class AuthController
 
     #[OA\Post(
         path:'/api/logout',
-        summary: '',
+        summary: 'Sign out of the system',
+        description: 'Sign out of the system and close the session.',
         tags: ['Authentication'],
-        requestBody:
-            new OA\RequestBody(
-                required: true,
-                description: '',
-                content: 
-                    new OA\JsonContent(type: "", required: ["", ""], properties: [
-                        new OA\Property(property: "", type: "", minLength: , maxLength: , examples: ""),
-                    ])
-            ),
         responses: [
             new OA\Response(
-                response: '',
-                description: ''
-            ),
-            new OA\Response(
-                response: '',
-                description: ''
+                response: '204',
+                description: 'User has been signed out successfully'
             )
         ]
     )]
@@ -92,25 +82,17 @@ class AuthController
 
     #[OA\Get(
         path:'/api/user',
-        summary: '',
-        tags: [''],
-        requestBody:
-            new OA\RequestBody(
-                required: true,
-                description: '',
-                content: 
-                    new OA\JsonContent(type: "", required: ["", ""], properties: [
-                        new OA\Property(property: "", type: "", minLength: , maxLength: , examples: ""),
-                    ])
-            ),
+        summary: 'Retrieve currently signed in user',
+        description: 'Retrieve details about the currently signed in user. Returns a JSON object.',
+        tags: ['Authentication'],
         responses: [
             new OA\Response(
-                response: '',
-                description: ''
-            ),
-            new OA\Response(
-                response: '',
-                description: ''
+                response: '200',
+                description: 'User data obtained from the system',
+                content: 
+                    new OA\JsonContent(type: "object", properties: [
+                        new OA\Property(property: "data", ref: "#/components/schemas/UserResource"),
+                    ])
             )
         ]
     )]
@@ -119,26 +101,13 @@ class AuthController
 
     #[OA\Get(
         path:'/api/sanctum/csrf-cookie',
-        summary: '',
-        tags: [''],
-        requestBody:
-            new OA\RequestBody(
-                required: true,
-                description: '',
-                content: 
-                    new OA\JsonContent(type: "", required: ["", ""], properties: [
-                        new OA\Property(property: "", type: "", minLength: , maxLength: , examples: ""),
-                    ])
-            ),
+        summary: 'Retrieve a cookie with CSRF token.',
+        tags: ['Authentication'],
         responses: [
             new OA\Response(
-                response: '',
-                description: ''
+                response: '204',
+                description: 'Cookie has been set successfully'
             ),
-            new OA\Response(
-                response: '',
-                description: ''
-            )
         ]
     )]
     public function cookie() {}
