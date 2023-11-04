@@ -8,25 +8,26 @@ use Spatie\QueryBuilder\QueryBuilder;
 class PaginationHelper
 {
     /**
-     * Paginate the query based on the request parameters. If the paginate parameter is set to false do not paginate
-     * the results (pagination is enabled by default). If the per_page parameter is set, paginate the query with the
-     * given number of results per page (the default value is 15).
+     * Paginate the query based on the request parameters. If the paginate parameter is not set, paginate the query.
+     * If the paginate parameter is set to false, return all the results. If the paginate parameter is set to true,
+     * paginate the query. If the per_page parameter is set, paginate the query with the given number of results per
+     * page.
      *
      * @param QueryBuilder $outQuery
      * @param Request $request
      * @return void
      */
-    public static function Paginate(QueryBuilder &$outQuery, Request $request): void
+    public static function Paginate(QueryBuilder &$query, Request $request): void
     {
-        $paginate = $request['paginate'];
-        $perPage = $request['per_page'] ?? 15;
+        $shouldPaginate = $request->input('paginate', true);
+        $shouldPaginate = ($shouldPaginate === 'false') ? false : (bool)$shouldPaginate;
 
-        if ($paginate === null) {
-            $outQuery = $outQuery->paginate($perPage);
-        } else if ($paginate === 'false') {
-            $outQuery = $outQuery->get();
+        $perPage = $request->input('per_page', 15);
+
+        if ($shouldPaginate) {
+            $query = $query->paginate($perPage);
         } else {
-            $outQuery = $outQuery->paginate($perPage);
+            $query = $query->get();
         }
     }
 }
