@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
+use App\Http\Controllers\API\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +27,11 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
 // Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
 // Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 // Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)->name('verification.verify');
 // Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->name('verification.send');
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+Route::apiResource('/users', UserController::class)->names('api.users')->except(['store']);
