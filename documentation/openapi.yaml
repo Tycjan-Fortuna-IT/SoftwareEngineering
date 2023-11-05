@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   title: 'Software Engineering API'
   contact:
@@ -54,7 +54,7 @@ paths:
         '204':
           description: 'User has been registered successfully'
         '422':
-          description: 'There was a validation error'
+          description: 'There has been a validation error'
   /api/login:
     post:
       tags:
@@ -88,7 +88,7 @@ paths:
         '204':
           description: 'User has been signed in successfully'
         '422':
-          description: 'There was a validation error'
+          description: 'There has been a validation error'
   /api/logout:
     post:
       tags:
@@ -124,6 +124,112 @@ paths:
       responses:
         '204':
           description: 'Cookie has been set successfully'
+  /api/users:
+    get:
+      tags:
+        - User
+      summary: 'Retrieve all users'
+      description: 'Retrieve all users. Depending on whether the query parameters have been entered, obtain paginated or unpaginated response.'
+      operationId: fb93387dc36694526b60606326ac2db3
+      parameters:
+        -
+          $ref: '#/components/parameters/page'
+        -
+          $ref: '#/components/parameters/per_page'
+        -
+          $ref: '#/components/parameters/paginate'
+      responses:
+        '200':
+          description: 'User has been registered successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                'Paginated response':
+                  summary: 'Paginated response'
+                  value: { data: { uuid: 04776536-c79c-4baa-a3ba-db945d70c902, name: coolname123, email: jane.roe@gmail.com, created_at: '2023-10-29T15:25:45.000000Z', updated_at: '2023-10-29T15:25:45.000000Z' }, links: { first: 'http://localhost:8000/api/users?page=1', last: 'http://localhost:8000/api/users?page=15', prev: 'http://localhost:8000/api/users?page=4', next: 'http://localhost:8000/api/users?page=6' }, meta: { current_page: 1, from: 1, last_page: 1, per_page: 15, to: 15, total: 15, path: 'http://localhost:8000/api/users', links: [{ url: 'http://localhost:8000/api/users?page=1', label: 1, active: true }] } }
+                'Not paginated response':
+                  summary: 'Not paginated response'
+                  value: { data: { uuid: 04776536-c79c-4baa-a3ba-db945d70c902, name: coolname123, email: jane.roe@gmail.com, created_at: '2023-10-29T15:25:45.000000Z', updated_at: '2023-10-29T15:25:45.000000Z' } }
+  '/api/users/{uuid}':
+    get:
+      tags:
+        - User
+      summary: 'Retrieve a user'
+      description: 'Retrieve the data of a user specified by UUID.'
+      operationId: dfb34da309be03b01666fef9c3b87aa7
+      parameters:
+        -
+          $ref: '#/components/parameters/uuid_url_param'
+      responses:
+        '200':
+          description: 'The user has been retrieved successfully'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/UserResource' }
+                type: object
+        '404':
+          description: 'User has not been found'
+    put:
+      tags:
+        - User
+      summary: 'Update a user'
+      description: 'Update the data of a user specified by UUID.'
+      operationId: 465c182a27871b330bd6f5f54350d1de
+      parameters:
+        -
+          $ref: '#/components/parameters/uuid_url_param'
+      requestBody:
+        description: 'User data required for the update'
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  example: coolname123
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                  example: jane.roe@gmail.com
+                password:
+                  type: string
+                  maxLength: 255
+                  minLength: 8
+                  example: strongpassword123
+                password_confirmation:
+                  type: string
+                  maxLength: 255
+                  minLength: 8
+                  example: strongpassword123
+              type: object
+      responses:
+        '200':
+          description: 'User has been updated successfully'
+        '404':
+          description: 'User has not been found'
+        '422':
+          description: 'There has been a validation error'
+    delete:
+      tags:
+        - User
+      summary: 'Delete a user'
+      description: 'Delete a user specified by UUID.'
+      operationId: 028f06635429b80f4f942e134eaeca8c
+      parameters:
+        -
+          $ref: '#/components/parameters/uuid_url_param'
+      responses:
+        '200':
+          description: 'User has been deleted successfully'
+        '404':
+          description: 'User has not been found'
 components:
   schemas:
     LinksResponsePart:
@@ -194,7 +300,7 @@ components:
         name:
           type: string
           maxLength: 255
-          example: 'Jane Roe'
+          example: coolname123
         email:
           description: 'Has to be lowercase'
           type: string

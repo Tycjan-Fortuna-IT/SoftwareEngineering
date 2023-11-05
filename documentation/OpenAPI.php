@@ -7,15 +7,15 @@ use OpenApi\Attributes as OA;
 require(__DIR__ . '/requires.php');
 
 #[OA\Info(title: "Software Engineering API", version: "1.0.0")]
-#[OA\Server(url: "https://it-core.fun", description: "Development server")]
+#[OA\Server(url: "https://se-test-server.it-core.fun", description: "Test server for SE 2023/2024")]
 #[OA\Contact(email: "242213@edu.p.lodz.pl")]
-#[OA\OpenApi(openapi: "3.1.0")]
+#[OA\OpenApi(openapi: "3.0.0")]
 class OpenApi {}
 
 #[OA\Schema(
     title: "LinksResponsePart",
     type: "object",
-    description: "A part of successfully paginated response that contains links to other pages"
+    description: "A part of successfully paginated response that contains links to other pages."
 )]
 class LinksResponsePart
 {
@@ -29,7 +29,7 @@ class LinksResponsePart
 #[OA\Schema(
     title: "MetaResponsePart",
     type: "object",
-    description: "A part of successfully paginated response that contains metadata"
+    description: "A part of successfully paginated response that contains metadata."
 )]
 class MetaResponsePart
 {
@@ -74,7 +74,7 @@ class FilterByUserUuidQueryParam {}
 #[OA\Parameter(
     parameter: "filter_by_user_uuid_param_required",
     name: "filter[user_uuid]",
-    description: "Allows for filtering resources by the UUID of the user. This search parameter is required",
+    description: "Allows for filtering resources by the UUID of the user",
     in: "query",
     required: true,
     schema: new OA\Schema(type: "string", format: "uuid", example: "04776536-c79c-4baa-a3ba-db945d70c902"),
@@ -85,7 +85,7 @@ class FilterByUserUuidRequiredQueryParam {}
 #[OA\Parameter(
     parameter: "filter_by_type_param",
     name: "filter[type]",
-    description: "Allows for filtering resources by their explicit type",
+    description: "Allows for filtering resources by their exact type",
     in: "query",
     required: false,
     schema: new OA\Schema(type: "integer", format: "int32", example: 1),
@@ -97,7 +97,7 @@ class FilterByTypeQueryParam {}
     name: "page",
     in: "query",
     required: false,
-    description: "If pagination is enabled, returns a certain page of the data entries",
+    description: "If pagination is enabled, returns a specified page of the data resources",
     schema: new OA\Schema(type: "integer", format: "int32", default: 1)
 )]
 class PageNumberQueryParam {}
@@ -106,7 +106,7 @@ class PageNumberQueryParam {}
     name: "per_page",
     in: "query",
     required: false,
-    description: "If pagination is enabled, returns a certain number of data entries per page",
+    description: "If pagination is enabled, returns a specified number of data resources per page",
     schema: new OA\Schema(type: "integer", format: "int32", default: 15)
 )]
 class PerPageQueryParam {}
@@ -115,25 +115,7 @@ class PerPageQueryParam {}
     name: "paginate",
     in: "query",
     required: false,
-    description: "If pagination is enabled, returns paginated data entries",
+    description: "If pagination is enabled, returns paginated data resources",
     schema: new OA\Schema(type: "boolean", default: true)
 )]
 class DoPaginateQueryParam {}
-
-#[OA\Parameter(
-    name: "type",
-    in: "query",
-    required: false,
-    description: "Filter by type",
-    schema: new OA\Schema(type: "integer", format: "int32", default: 1)
-)]
-class TypeQueryParam {}
-
-#[OA\Parameter(
-    name: "user_uuid",
-    in: "path",
-    required: true,
-    description: "Filter the data by the user UUID",
-    schema: new OA\Schema(type: "string", format: "uuid")
-)]
-class UserUUIDScope {}
