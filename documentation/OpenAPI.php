@@ -2,6 +2,16 @@
 
 namespace Documentation;
 
+class OpenAPIExampleHelper 
+{
+    const LINKS = [
+        'first' => "http://localhost:8000/api/users?page=1",
+        'last' => "http://localhost:8000/api/users?page=15",
+        'prev' => "http://localhost:8000/api/users?page=4",
+        'next' => "http://localhost:8000/api/users?page=6",
+    ];
+}
+
 use OpenApi\Attributes as OA;
 
 require(__DIR__ . '/requires.php');

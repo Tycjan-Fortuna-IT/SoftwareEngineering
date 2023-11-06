@@ -19,7 +19,7 @@ class UserController
         responses: [
             new OA\Response(
                 response: '200',
-                description: 'User has been registered successfully',
+                description: 'Users have been retrieved successfully',
                 content: 
                     new OA\JsonContent(type: "object", examples: [
                         new OA\Examples(
@@ -33,12 +33,7 @@ class UserController
                                     'created_at' => '2023-10-29T15:25:45.000000Z',
                                     'updated_at' => '2023-10-29T15:25:45.000000Z'
                                 ],
-                                'links' => [ 
-                                    'first' => "http://localhost:8000/api/users?page=1",
-                                    'last' => "http://localhost:8000/api/users?page=15",
-                                    'prev' => "http://localhost:8000/api/users?page=4",
-                                    'next' => "http://localhost:8000/api/users?page=6"
-                                ],
+                                'links' => \Documentation\OpenAPIExampleHelper::LINKS,
                                 'meta' => [
                                     'current_page' => 1,
                                     'from' => 1,
@@ -67,7 +62,7 @@ class UserController
                                     'updated_at' => '2023-10-29T15:25:45.000000Z'
                                 ]
                             ]
-                        )                        
+                        )
                     ])
 
             )
