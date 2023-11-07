@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace Documentation\Resources;
+namespace Docs\Resources;
 
 use OpenApi\Attributes as OA;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Documentation;
+namespace Docs;
 
-class OpenAPIExampleHelper 
+class OpenAPIExampleHelper
 {
     const EXAMPLE_USER_DATA = [
         'uuid' => "04776536-c79c-4baa-a3ba-db945d70c902",
@@ -32,17 +32,57 @@ class OpenAPIExampleHelper
             'label' => 1,
             'active' => true
         ]]
-    ];    
+    ];
 }
 
 use OpenApi\Attributes as OA;
 
 require(__DIR__ . '/requires.php');
 
-#[OA\Info(title: "Software Engineering API", version: "1.0.0")]
-#[OA\Server(url: "https://se-test-server.it-core.fun", description: "Test server for SE 2023/2024")]
-#[OA\Contact(email: "242213@edu.p.lodz.pl")]
-#[OA\OpenApi(openapi: "3.0.0")]
+#[OA\OpenApi(
+    openapi: "3.0.0",
+    info: new OA\Info(
+        title: "Software Engineering API",
+        version: "1.0.0",
+        description: "API documentation for the Software Engineering project server.
+            This documentation is generated automatically using `OpenAPI 3.0.0` specification and OpenAPI Generator.
+            In case of any problems with (or suggestions for) the server API, please create an issue in the repository
+            of the project or contact our group on the specific thread on Discord, or contact us directly.
+            \n How to fetch the API:
+            \n- Using `Postman` runtime environment, send requests for manual testing of your implementation.
+            \n- Using the local server hosted at `https://localhost:3000`, send requests ONLY through `HTTPS` protocol.
+            \n
+            \nLink to the test server is: [`https://se-test-server.it-core.fun`](https://se-test-server.it-core.fun)",
+        contact: new OA\Contact(
+            name: "wuetenderzucker",
+            email: "247028@edu.p.lodz.pl"
+        ),
+        license: new OA\License(
+            name: "MIT",
+            url: "https://opensource.org/licenses/MIT"
+        )
+    ),
+    servers: [
+        new OA\Server(
+            url: "https://se-test-server.it-core.fun",
+            description: "Test server for SE 2023/2024"
+        )
+    ],
+    tags: [
+        new OA\Tag(
+            name: "Authentication",
+            description: "Operations related to authentication"
+        ),
+        new OA\Tag(
+            name: "User",
+            description: "Operations related to users"
+        ),
+    ],
+    externalDocs: new OA\ExternalDocumentation(
+        description: "Repository of the project (backend)",
+        url: "https://github.com/Tycjan-Fortuna-IT/SoftwareEngineering"
+    ),
+)]
 class OpenApi {}
 
 #[OA\Schema(

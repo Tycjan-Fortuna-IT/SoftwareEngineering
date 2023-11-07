@@ -1,8 +1,13 @@
 openapi: 3.0.0
 info:
   title: 'Software Engineering API'
+  description: "API documentation for the Software Engineering project server.\n            This documentation is generated automatically using `OpenAPI 3.0.0` specification and OpenAPI Generator.\n            In case of any problems with (or suggestions for) the server API, please create an issue in the repository\n            of the project or contact our group on the specific thread on Discord, or contact us directly.\n            \n How to fetch the API:\n            \n- Using `Postman` runtime environment, send requests for manual testing of your implementation.\n            \n- Using the local server hosted at `https://localhost:3000`, send requests ONLY through `HTTPS` protocol.\n            \n\n            \nLink to the test server is: [`https://se-test-server.it-core.fun`](https://se-test-server.it-core.fun)"
   contact:
-    email: 242213@edu.p.lodz.pl
+    name: wuetenderzucker
+    email: 247028@edu.p.lodz.pl
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
   version: 1.0.0
 servers:
   -
@@ -15,7 +20,7 @@ paths:
         - Authentication
       summary: 'Create and register a new user'
       description: 'Create a new user and register the user into the system. Before sending this request, you also need to retrieve a cookie with CSRF token (see later in the section: /api/sanctum/csrf-cookie).'
-      operationId: 628bc9b0cf358dd0bc0777b8e80311c3
+      operationId: 39284adbf891e1a4213c18dac4c4676e
       requestBody:
         description: 'Data needed for registration of the user'
         required: true
@@ -61,7 +66,7 @@ paths:
         - Authentication
       summary: 'Sign in to the system'
       description: 'Sign in to the system and start a session. Before sending this request, you also need to retrieve a cookie with CSRF token (see later in the section: /api/sanctum/csrf-cookie).'
-      operationId: ad4049f968af4d3f293c52fc8d2a53cf
+      operationId: 34f1f783921ad786b8cc02dd92e73ead
       requestBody:
         description: 'Data needed for signing in and starting a session'
         required: true
@@ -95,7 +100,7 @@ paths:
         - Authentication
       summary: 'Sign out of the system'
       description: 'Sign out of the system and close the session.'
-      operationId: 6fa02cb87f35edc7bfb6046b0bae2f6b
+      operationId: a6966088db96360d68b647367a1c14af
       responses:
         '204':
           description: 'User has been signed out successfully'
@@ -105,7 +110,7 @@ paths:
         - Authentication
       summary: 'Retrieve currently signed in user'
       description: 'Retrieve details about the currently signed in user.'
-      operationId: e2744e00adeb069eb1480a8f4c6a6a3d
+      operationId: 16afd9cdc31bcbd6b564c8dc7209e20a
       responses:
         '200':
           description: 'User data obtained from the system'
@@ -120,7 +125,7 @@ paths:
       tags:
         - Authentication
       summary: 'Retrieve a cookie with CSRF token'
-      operationId: 368adad8c50ec01e47d5504d2d8eeda8
+      operationId: 15dbd4bcbd6ba739a8140e9add83843b
       responses:
         '204':
           description: 'Cookie has been set successfully'
@@ -130,7 +135,7 @@ paths:
         - User
       summary: 'Retrieve all users'
       description: 'Retrieve all users. Depending on whether the query parameters have been entered, obtain paginated or unpaginated response.'
-      operationId: fb93387dc36694526b60606326ac2db3
+      operationId: 07c2caac6bc2baf8680e8acb099b7165
       parameters:
         -
           $ref: '#/components/parameters/page'
@@ -158,7 +163,7 @@ paths:
         - User
       summary: 'Retrieve a user'
       description: 'Retrieve the data of a user specified by UUID.'
-      operationId: dfb34da309be03b01666fef9c3b87aa7
+      operationId: f0f60cff64378f05feac1f99acc50be1
       parameters:
         -
           $ref: '#/components/parameters/uuid_url_param'
@@ -178,7 +183,7 @@ paths:
         - User
       summary: 'Update a user'
       description: 'Update the data of a user specified by UUID.'
-      operationId: 465c182a27871b330bd6f5f54350d1de
+      operationId: ea74043be320c5de5ca69fc312c70cf8
       parameters:
         -
           $ref: '#/components/parameters/uuid_url_param'
@@ -221,7 +226,7 @@ paths:
         - User
       summary: 'Delete a user'
       description: 'Delete a user specified by UUID.'
-      operationId: 028f06635429b80f4f942e134eaeca8c
+      operationId: 77f0671ff8bd87ef80aa78574045c301
       parameters:
         -
           $ref: '#/components/parameters/uuid_url_param'
@@ -378,3 +383,13 @@ components:
       schema:
         type: boolean
         default: true
+tags:
+  -
+    name: Authentication
+    description: 'Operations related to authentication'
+  -
+    name: User
+    description: 'Operations related to users'
+externalDocs:
+  description: 'Repository of the project (backend)'
+  url: 'https://github.com/Tycjan-Fortuna-IT/SoftwareEngineering'

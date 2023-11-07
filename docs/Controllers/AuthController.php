@@ -1,6 +1,6 @@
-<?php   
+<?php
 
-namespace Documentation\Controllers;
+namespace Docs\Controllers;
 
 use OpenApi\Attributes as OA;
 
@@ -15,7 +15,7 @@ class AuthController
             new OA\RequestBody(
                 required: true,
                 description: 'Data needed for registration of the user',
-                content: 
+                content:
                     new OA\JsonContent(type: "object", required: ["name", "email", "password", "password_confirmation"], properties: [
                         new OA\Property(property: "name", type: "string", maxLength: 255, example: "coolname123"),
                         new OA\Property(property: "email", type: "string", format: "email", maxLength: 255, example: "jane.roe@gmail.com"),
@@ -46,7 +46,7 @@ class AuthController
             new OA\RequestBody(
                 required: true,
                 description: 'Data needed for signing in and starting a session',
-                content: 
+                content:
                     new OA\JsonContent(type: "object", required: ["email", "password"], properties: [
                         new OA\Property(property: "email", type: "string", format: "email", maxLength: 255, example: "jane.roe@gmail.com"),
                         new OA\Property(property: "password", type: "string", format: "password", minLength: 8, maxLength: 255, example: "strongpassword123")
@@ -89,7 +89,7 @@ class AuthController
             new OA\Response(
                 response: '200',
                 description: 'User data obtained from the system',
-                content: 
+                content:
                     new OA\JsonContent(type: "object", properties: [
                         new OA\Property(property: "data", ref: "#/components/schemas/UserResource"),
                     ])

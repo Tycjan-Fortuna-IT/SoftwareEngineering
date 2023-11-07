@@ -1,6 +1,6 @@
 <?php
 
-namespace Documentation\Controllers;
+namespace Docs\Controllers;
 
 use OpenApi\Attributes as OA;
 
@@ -20,22 +20,22 @@ class UserController
             new OA\Response(
                 response: '200',
                 description: 'Users have been retrieved successfully',
-                content: 
+                content:
                     new OA\JsonContent(type: "object", examples: [
                         new OA\Examples(
                             summary: "Paginated response",
                             example: "Paginated response",
                             value: [
-                                'data' => \Documentation\OpenAPIExampleHelper::EXAMPLE_USER_DATA,
-                                'links' => \Documentation\OpenAPIExampleHelper::EXAMPLE_LINKS,
-                                'meta' => \Documentation\OpenAPIExampleHelper::EXAMPLE_META
+                                'data' => \Docs\OpenAPIExampleHelper::EXAMPLE_USER_DATA,
+                                'links' => \Docs\OpenAPIExampleHelper::EXAMPLE_LINKS,
+                                'meta' => \Docs\OpenAPIExampleHelper::EXAMPLE_META
                             ]
                         ),
                         new OA\Examples(
                             summary: "Not paginated response",
                             example: "Not paginated response",
                             value: [
-                                'data' => \Documentation\OpenAPIExampleHelper::EXAMPLE_USER_DATA
+                                'data' => \Docs\OpenAPIExampleHelper::EXAMPLE_USER_DATA
                             ]
                         )
                     ])
