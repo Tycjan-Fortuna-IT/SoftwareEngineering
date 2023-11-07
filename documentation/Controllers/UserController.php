@@ -26,41 +26,16 @@ class UserController
                             summary: "Paginated response",
                             example: "Paginated response",
                             value: [
-                                'data' => [
-                                    'uuid' => "04776536-c79c-4baa-a3ba-db945d70c902",
-                                    'name' => 'coolname123',
-                                    'email' => 'jane.roe@gmail.com',
-                                    'created_at' => '2023-10-29T15:25:45.000000Z',
-                                    'updated_at' => '2023-10-29T15:25:45.000000Z'
-                                ],
-                                'links' => \Documentation\OpenAPIExampleHelper::LINKS,
-                                'meta' => [
-                                    'current_page' => 1,
-                                    'from' => 1,
-                                    'last_page' => 1,
-                                    'per_page' => 15,
-                                    'to' => 15,
-                                    'total' => 15,
-                                    'path' => "http://localhost:8000/api/users",
-                                    'links' => [[
-                                        'url' => "http://localhost:8000/api/users?page=1",
-                                        'label' => 1,
-                                        'active' => true
-                                    ]]
-                                ]
+                                'data' => \Documentation\OpenAPIExampleHelper::EXAMPLE_USER_DATA,
+                                'links' => \Documentation\OpenAPIExampleHelper::EXAMPLE_LINKS,
+                                'meta' => \Documentation\OpenAPIExampleHelper::EXAMPLE_META
                             ]
                         ),
                         new OA\Examples(
                             summary: "Not paginated response",
                             example: "Not paginated response",
                             value: [
-                                'data' => [
-                                    'uuid' => "04776536-c79c-4baa-a3ba-db945d70c902",
-                                    'name' => 'coolname123',
-                                    'email' => 'jane.roe@gmail.com',
-                                    'created_at' => '2023-10-29T15:25:45.000000Z',
-                                    'updated_at' => '2023-10-29T15:25:45.000000Z'
-                                ]
+                                'data' => \Documentation\OpenAPIExampleHelper::EXAMPLE_USER_DATA
                             ]
                         )
                     ])

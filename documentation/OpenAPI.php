@@ -4,12 +4,35 @@ namespace Documentation;
 
 class OpenAPIExampleHelper 
 {
-    const LINKS = [
+    const EXAMPLE_USER_DATA = [
+        'uuid' => "04776536-c79c-4baa-a3ba-db945d70c902",
+        'name' => 'coolname123',
+        'email' => 'jane.roe@gmail.com',
+        'created_at' => '2023-10-29T15:25:45.000000Z',
+        'updated_at' => '2023-10-29T15:25:45.000000Z'
+    ];
+
+    const EXAMPLE_LINKS = [
         'first' => "http://localhost:8000/api/users?page=1",
         'last' => "http://localhost:8000/api/users?page=15",
         'prev' => "http://localhost:8000/api/users?page=4",
         'next' => "http://localhost:8000/api/users?page=6",
     ];
+
+    const EXAMPLE_META = [
+        'current_page' => 1,
+        'from' => 1,
+        'last_page' => 1,
+        'per_page' => 15,
+        'to' => 15,
+        'total' => 15,
+        'path' => "http://localhost:8000/api/users",
+        'links' => [[
+            'url' => "http://localhost:8000/api/users?page=1",
+            'label' => 1,
+            'active' => true
+        ]]
+    ];    
 }
 
 use OpenApi\Attributes as OA;

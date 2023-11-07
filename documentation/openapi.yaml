@@ -140,7 +140,7 @@ paths:
           $ref: '#/components/parameters/paginate'
       responses:
         '200':
-          description: 'User has been registered successfully'
+          description: 'Users have been retrieved successfully'
           content:
             application/json:
               schema:
