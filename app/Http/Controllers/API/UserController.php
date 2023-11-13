@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Hash;
+use App\Helpers\Managers\UserFriendManager;
 
 class UserController extends Controller
 {
@@ -38,6 +39,16 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user): UserResource
     {
+        $request->validate([
+            'withFriends' => 'nullable',
+        ]);
+
+        $withFriends = $request->withFriends === 'true' ? true : false;
+
+        if ($withFriends) {
+            $user->load('friends');
+        }
+
         return new UserResource($user);
     }
 
@@ -86,5 +97,79 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'User deleted.'], 200);
+    }
+
+    /**
+     * Add a friend to the specified user.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function addFriend(Request $request, User $user): JsonResponse
+    {
+        $request->validate([
+            'friend_uuid' => 'required|uuid|exists:users,uuid',
+        ]);
+
+        $friend = User::where('uuid', $request->friend_uuid)->first();
+
+        if (UserFriendManager::HasFriend($user, $friend)) {
+            return response()->json(['message' => 'This user is already your friend!'], 400);
+        }
+
+        // TODO: Add notification to the friend.
+        UserFriendManager::AddFriend($user, $friend);
+
+        return response()->json(['message' => 'Friend added.'], 200);
+    }
+
+    /**
+     * Remove a friend from the specified user.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function removeFriend(Request $request, User $user): JsonResponse
+    {
+        $request->validate([
+            'friend_uuid' => 'required|uuid|exists:users,uuid',
+        ]);
+
+        $friend = User::where('uuid', $request->friend_uuid)->first();
+
+        if (!UserFriendManager::HasFriend($user, $friend)) {
+            return response()->json(['message' => 'This user is not your friend!'], 400);
+        }
+
+        UserFriendManager::RemoveFriend($user, $friend);
+
+        return response()->json(['message' => 'Friend removed.'], 200);
+    }
+
+    /**
+     * Update favourite status of a friend of the specified user.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function updateFavourite(Request $request, User $user): JsonResponse
+    {
+        $request->validate([
+            'friend_uuid' => 'required|uuid|exists:users,uuid',
+            'favourite' => 'required|boolean',
+        ]);
+
+        $friend = User::where('uuid', $request->friend_uuid)->first();
+
+        if (!UserFriendManager::HasFriend($user, $friend)) {
+            return response()->json(['message' => 'This user is not your friend!'], 400);
+        }
+
+        UserFriendManager::UpdateFavourite($user, $friend, $request->favourite);
+
+        return response()->json(['message' => 'Favourite status updated.'], 200);
     }
 }

@@ -16,5 +16,15 @@ class UserSeeder extends Seeder
         User::factory()
             ->count(25)
             ->create();
+
+        $users = User::all();
+
+        foreach ($users as $user) {
+            $user->friends()->attach($users->random(5));
+        }
+
+        $users->each(function ($user) {
+            $user->friends()->updateExistingPivot($user->friends->random()->id, ['favourite' => true]);
+        });
     }
 }

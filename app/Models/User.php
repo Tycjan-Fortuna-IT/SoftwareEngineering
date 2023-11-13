@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
+use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -71,5 +72,17 @@ class User extends Authenticatable
         static::creating(function (User $user) {
             $user->uuid = Str::uuid();
         });
+    }
+
+    /**
+     * Get the user's friends.
+     *
+     * @return BelongsToMany
+     */
+    public function friends() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_friend', 'user_id', 'friend_id')
+                    ->withPivot('favourite')
+                    ->withTimestamps();
     }
 }

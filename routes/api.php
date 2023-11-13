@@ -19,15 +19,15 @@ use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 |
 */
 
-Route::get('/csrf-cookie', [CsrfCookieController::class, 'show'])->middleware('web')->name('sanctum.csrf-cookie');
+Route::get('/csrf-cookie', [CsrfCookieController::class, 'show'])->middleware('web');
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [RegisteredUserController::class, 'store'])->name('register');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+Route::post('/register', [RegisteredUserController::class, 'store']);
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 // Consider:
 // Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -36,3 +36,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 // Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->name('verification.send');
 
 Route::apiResource('/users', UserController::class)->names('api.users')->except(['store']);
+Route::post('/users/{user}/addFriend', [UserController::class, 'addFriend']);
+Route::delete('/users/{user}/removeFriend', [UserController::class, 'removeFriend']);
+Route::put('/users/{user}/updateFavourite', [UserController::class, 'updateFavourite']);
