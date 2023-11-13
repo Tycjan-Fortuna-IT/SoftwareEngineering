@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -51,11 +52,23 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'nullable|string|max:255',
+            'avatar' => 'nullable|string',
+            'about' => 'nullable|string',
             'email' => 'nullable|email|unique:users|max:255',
+            'anonymous' => 'nullable|boolean',
+            'password' => 'nullable|confirmed|min:8',
         ]);
 
         $user->name = $request->name ?? $user->name;
         $user->email = $request->email ?? $user->email;
+        $user->avatar = $request->avatar ?? $user->avatar;
+        $user->about = $request->about ?? $user->about;
+        $user->anonymous = $request->anonymous ?? $user->anonymous;
+
+        if (isset($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
+
         $user->save();
 
         return response()->json(['message' => 'User updated.'], 200);
