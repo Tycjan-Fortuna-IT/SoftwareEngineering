@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use \Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -84,5 +85,25 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'user_friend', 'user_id', 'friend_id')
                     ->withPivot('favourite')
                     ->withTimestamps();
+    }
+
+    /**
+     * Get all of the posts for the user.
+     *
+     * @return HasMany
+     */
+    public function posts() : HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Get all of the comments for the user.
+     *
+     * @return HasMany
+     */
+    public function comments() : HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

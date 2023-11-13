@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +37,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 // Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)->name('verification.verify');
 // Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->name('verification.send');
 
-Route::apiResource('/users', UserController::class)->names('api.users')->except(['store']);
+Route::apiResource('/users', UserController::class)->except(['store']);
 Route::post('/users/{user}/addFriend', [UserController::class, 'addFriend']);
 Route::delete('/users/{user}/removeFriend', [UserController::class, 'removeFriend']);
 Route::put('/users/{user}/updateFavourite', [UserController::class, 'updateFavourite']);
+
+Route::apiResource('/posts', PostController::class);
+Route::apiResource('/comments', CommentController::class);
