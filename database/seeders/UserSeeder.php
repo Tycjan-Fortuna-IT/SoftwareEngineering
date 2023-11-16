@@ -25,6 +25,12 @@ class UserSeeder extends Seeder
 
         $users->each(function ($user) {
             $user->friends()->updateExistingPivot($user->friends->random()->id, ['favourite' => true]);
+
+            $user->tutorials()->each(function ($tutorial) {
+                $tutorial->update([
+                    'completed' => rand(0, 1),
+                ]);
+            });
         });
     }
 }

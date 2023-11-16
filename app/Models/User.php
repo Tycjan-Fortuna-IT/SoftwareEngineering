@@ -72,6 +72,20 @@ class User extends Authenticatable
 
         static::creating(function (User $user) {
             $user->uuid = Str::uuid();
+
+        });
+
+        static::created(function (User $user) {
+            $user->tutorials()->createMany([
+                [ 'type' => Tutorial::INTRODUCTION ],
+                [ 'type' => Tutorial::GAME_1       ],
+                [ 'type' => Tutorial::GAME_2       ],
+                [ 'type' => Tutorial::GAME_3       ],
+                [ 'type' => Tutorial::GAME_4       ],
+                [ 'type' => Tutorial::GAME_5       ],
+                [ 'type' => Tutorial::GAME_6       ],
+                [ 'type' => Tutorial::GAME_7       ],
+            ]);
         });
     }
 
@@ -105,5 +119,25 @@ class User extends Authenticatable
     public function comments() : HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Get all of the tutorials for the user.
+     *
+     * @return HasMany
+     */
+    public function tutorials() : HasMany
+    {
+        return $this->hasMany(Tutorial::class)->orderBy('type');
+    }
+
+    /**
+     * Get all of the quests for the user.
+     *
+     * @return HasMany
+     */
+    public function quests() : HasMany
+    {
+        return $this->hasMany(Quest::class)->orderBy('type');
     }
 }
