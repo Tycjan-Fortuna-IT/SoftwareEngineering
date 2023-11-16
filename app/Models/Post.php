@@ -72,10 +72,11 @@ class Post extends Model
     /**
      * Scope a query to only include posts of a given user.
      *
+     * @param Builder $query
      * @param string $uuid
      * @return Builder
      */
-    public function scopeUserUuid($query, string $uuid) : Builder
+    public function scopeUserUuid(Builder $query, string $uuid) : Builder
     {
         return $query->whereHas('user', function ($query) use ($uuid) {
             $query->where('uuid', $uuid);
@@ -85,10 +86,11 @@ class Post extends Model
     /**
      * Get all posts that match a given search title.
      *
+     * @param Builder $query
      * @param string $uuid
      * @return Builder
      */
-    public function scopeSearch($query, string $search) : Builder
+    public function scopeSearch(Builder $query, string $search) : Builder
     {
         return $query->where('title', 'LIKE', '%' . $search . '%');
     }

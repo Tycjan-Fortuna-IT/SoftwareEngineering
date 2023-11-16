@@ -4,11 +4,6 @@ namespace App\Http\Resources\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use App\Helpers\PaginationHelper;
-use Spatie\QueryBuilder\QueryBuilder;
-use App\Models\Post;
-use App\Http\Resources\API\PostResource;
 
 class PostResource extends JsonResource
 {
@@ -24,7 +19,9 @@ class PostResource extends JsonResource
             'image' => $this->image,
             'title' => $this->title,
             'description' => $this->description,
+            'user' => new UserInPostResource($this->whenLoaded('user')),
             'comments_count' => $this->when($request->has('withCommentCount'), $this->comments_count),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
