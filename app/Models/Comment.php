@@ -74,7 +74,7 @@ class Comment extends Model
      * @param string $uuid
      * @return Builder
      */
-    public function scopeUserUuid($query, string $uuid) : Builder
+    public function scopeUserUuid(Builder $query, string $uuid) : Builder
     {
         return $query->whereHas('user', function ($query) use ($uuid) {
             $query->where('uuid', $uuid);

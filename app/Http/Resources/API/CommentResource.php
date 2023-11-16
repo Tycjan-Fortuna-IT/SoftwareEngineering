@@ -17,7 +17,7 @@ class CommentResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'content' => $this->content,
-            'user' => new UserResource($this->user),
+            'user' => new UserInCommentResource($this->whenLoaded('user')),
         ];
     }
 }
