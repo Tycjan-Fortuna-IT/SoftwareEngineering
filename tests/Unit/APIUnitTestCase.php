@@ -39,7 +39,7 @@ abstract class APIUnitTestCase extends TestCase
 
     protected function get_random_post(): Post
     {
-        return Post::inRandomOder()->first();
+        return Post::inRandomOrder()->first();
     }
 
     protected function get_random_comment(): Comment

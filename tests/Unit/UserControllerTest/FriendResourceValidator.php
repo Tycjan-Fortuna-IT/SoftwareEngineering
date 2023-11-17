@@ -12,7 +12,6 @@ class FriendResourceValidator
             ->whereTypeUuid('uuid')
             ->whereType('name', 'string')
             ->whereType('avatar', 'string|null')
-            ->whereType('email', 'string')
             ->whereType('level', 'integer')
             ->whereType('experience', 'integer')
             ->whereType('favourite', 'boolean');

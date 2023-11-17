@@ -17,15 +17,11 @@ class UserResourceValidator
             ->whereType('level', 'integer')
             ->whereType('experience', 'integer')
             ->whereType('anonymous', 'boolean')
-            /*
-            TODO: condition perhaps
-            ->whereType('friends', 'array')
             ->has('friends', function (AssertableJson $friends) {
-                $friends->each(function (AssertableJson $friend) {
-                    //FriendResourceValidator::validate($friend)
+                $friends->eachNullable(function (AssertableJson $friend) {
+                    FriendResourceValidator::validate($friend);
                 });
             })
-            */
             ->whereTypeTimestamp('created_at')
             ->whereTypeTimestamp('updated_at');
 
