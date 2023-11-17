@@ -13,13 +13,13 @@ class CommentSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(int $count = 5): void
     {
         $users = User::all();
         $posts = Post::all();
 
-        $users->each(function ($user) use ($posts) {
-            for ($i = 0; $i < 5; $i++) {
+        $users->each(function ($user) use ($posts, $count) {
+            for ($i = 0; $i < $count; $i++) {
                 Comment::factory()->create([
                     'user_id' => $user->id,
                     'post_id' => $posts->random()->id,
