@@ -7,14 +7,13 @@ use Tests\Unit\APIUnitTestCase;
 
 class UserControllerDestroyTest extends APIUnitTestCase
 {
-    public function test_users_destroy_returns_not_found()
+    public function test_users_destroy_fails_user_not_found()
     {
         $this->actingAs($this->get_random_user())
             ->delete('/api/users/' . $this->get_random_uuid())
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
-    /*
     public function test_users_destroy_deletes_user()
     {
         $user = $this->get_random_user();
@@ -27,5 +26,4 @@ class UserControllerDestroyTest extends APIUnitTestCase
             'uuid' => $user->uuid
         ]);
     }
-    */
 }
