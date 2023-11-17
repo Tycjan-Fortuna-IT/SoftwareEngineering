@@ -165,4 +165,22 @@ class AssertableJson extends BaseAssertableJson
 
         return $this;
     }
+
+    /**
+     * Works as has() but for nullable properties.
+     *
+     * @param string $key The property key.
+     * @param Closure $callback The callback.
+     * @return static
+     */
+    public function hasNullable(string $key, Closure $callback): static
+    {
+        if ($this->prop($key) != null) {
+            $this->interactsWith($key);
+
+            $this->scope($key, $callback);
+        }
+
+        return $this;
+    }
 }

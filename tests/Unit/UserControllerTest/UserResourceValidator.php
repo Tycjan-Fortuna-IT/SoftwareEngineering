@@ -17,7 +17,7 @@ class UserResourceValidator
             ->whereType('level', 'integer')
             ->whereType('experience', 'integer')
             ->whereType('anonymous', 'boolean')
-            ->has('friends', function (AssertableJson $friends) {
+            ->hasNullable('friends', function (AssertableJson $friends) {
                 $friends->eachNullable(function (AssertableJson $friend) {
                     FriendResourceValidator::validate($friend);
                 });
