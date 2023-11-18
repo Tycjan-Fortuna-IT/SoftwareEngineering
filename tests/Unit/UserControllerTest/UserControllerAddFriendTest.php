@@ -7,12 +7,16 @@ use Tests\Unit\APIUnitTestCase;
 
 class UserControllerAddFriendTest extends APIUnitTestCase
 {
-    /*
     public function test_users_add_friend_fails_already_existing_friend()
     {
+        $user = $this->get_random_user();
         
+        $this->actingAs($user)
+            ->postJson('/api/users/' . $user->uuid . '/addFriend', [
+                'friend_uuid' => $user->friends()->first()->uuid
+            ])
+            ->assertStatus(Response::HTTP_BAD_REQUEST);
     }
-    */
 
     public function test_users_add_friend_fails_proposed_friend_user_not_found()
     {
