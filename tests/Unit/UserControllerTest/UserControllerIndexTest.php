@@ -67,5 +67,4 @@ class UserControllerIndexTest extends APIUnitTestCase
         $this->assertEquals(2, $response->json('meta.current_page'));
         $this->assertEquals(5, count($response->json('data')));
     }
-
 }

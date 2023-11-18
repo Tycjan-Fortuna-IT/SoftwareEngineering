@@ -8,7 +8,7 @@ use Tests\Unit\APIUnitTestCase;
 
 class UserControllerShowTest extends APIUnitTestCase
 {
-    public function test_users_show_returns_not_found()
+    public function test_users_show_fails_not_found()
     {
         $this->actingAs($this->get_random_user())
             ->get('/api/users/' . $this->get_random_uuid())
@@ -29,7 +29,6 @@ class UserControllerShowTest extends APIUnitTestCase
             });
     }
 
-    /*
     public function test_users_show_returns_correct_data_with_friends()
     {
         $user = $this->get_random_user();
@@ -43,5 +42,4 @@ class UserControllerShowTest extends APIUnitTestCase
                 });
             });
     }
-    */
 }

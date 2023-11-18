@@ -23,29 +23,32 @@ class UserControllerUpdateTest extends APIUnitTestCase
         ];
     }
 
-    public function test_update_user_with_bad_request_body(): void
+    public function test_update_user_fails_validation(): void
     {
         $user = $this->get_random_user();
 
-        $this->putJson('/api/users/' . $user->uuid, $this->get_bad_request_body())
+        $this->actingAs($user)
+            ->putJson('/api/users/' . $user->uuid, $this->get_bad_request_body())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonValidationErrors([
                 'name', 'email'
             ]);
     }
 
-    public function test_update_user_with_bad_uuid(): void
+    public function test_update_user_fails_user_not_found(): void
     {
-        $this->putJson('/api/users/' . $this->get_random_uuid(), $this->get_good_request_body())
+        $this->actingAs($this->get_random_user())
+            ->putJson('/api/users/' . $this->get_random_uuid(), $this->get_good_request_body())
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
-    public function test_update_user_with_already_existing_email(): void
+    public function test_update_user_fails_already_existing_email(): void
     {
         $user = $this->get_random_user();
         $otherUser = $this->get_random_user();
 
-        $this->putJson('/api/users/' . $user->uuid, [
+        $this->actingAs($user)
+            ->putJson('/api/users/' . $user->uuid, [
                 'email' => $otherUser->email
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -54,11 +57,12 @@ class UserControllerUpdateTest extends APIUnitTestCase
             ]);
     }
 
-    public function test_update_user_with_good_request_body(): void
+    public function test_update_user_updates_user(): void
     {
         $user = $this->get_random_user();
 
-        $this->putJson('/api/users/' . $user->uuid, $this->get_good_request_body())
+        $this->actingAs($this->get_random_user())
+            ->putJson('/api/users/' . $user->uuid, $this->get_good_request_body())
             ->assertStatus(Response::HTTP_OK);
 
         $user->refresh();
