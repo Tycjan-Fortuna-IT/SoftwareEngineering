@@ -45,7 +45,7 @@ class UserControllerUpdateTest extends APIUnitTestCase
     public function test_update_user_fails_already_existing_email(): void
     {
         $user = $this->get_random_user();
-        $otherUser = $this->get_random_user();
+        $otherUser = $this->prepare_user();
 
         $this->actingAs($user)
             ->putJson('/api/users/' . $user->uuid, [

@@ -46,4 +46,9 @@ abstract class APIUnitTestCase extends TestCase
     {
         return Comment::inRandomOrder()->first();
     }
+
+    protected function prepare_user(): User
+    {
+        return User::factory()->create();
+    }
 }

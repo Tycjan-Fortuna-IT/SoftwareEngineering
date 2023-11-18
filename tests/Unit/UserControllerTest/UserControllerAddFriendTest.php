@@ -10,28 +10,27 @@ class UserControllerAddFriendTest extends APIUnitTestCase
     /*
     public function test_users_add_friend_fails_already_existing_friend()
     {
-
+        
     }
-    
+    */
 
     public function test_users_add_friend_fails_proposed_friend_user_not_found()
     {
         $user = $this->get_random_user();
 
         $this->actingAs($user)
-            ->putJson('/api/user/' . $user->uuid . '/addFriend', [
+            ->postJson('/api/users/' . $user->uuid . '/addFriend', [
                 'friend_uuid' => $this->get_random_uuid()
             ])
-            ->assertStatus(Response::HTTP_NOT_FOUND);
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
-    */
 
     public function test_users_add_friend_fails_validation()
     {
         $user = $this->get_random_user();
         
         $this->actingAs($user)
-            ->putJson('/api/user/' . $user->uuid . '/addFriend', [
+            ->postJson('/api/users/' . $user->uuid . '/addFriend', [
                 'friend_uuid' => "..."
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -39,21 +38,17 @@ class UserControllerAddFriendTest extends APIUnitTestCase
 
     public function test_users_add_friend_adds_friend()
     {
-        $user = $this->get_random_user();
-        $otherUser = $this->get_random_user();
-       
-        $this->actingAs($otherUser);
-
-        $this->app->get('auth')->forgetGuards(); // to have two users logged
+        $user = $this->prepare_user();
+        $otherUser = $this->prepare_user();
 
         $this->actingAs($user)
-            ->putJson('/api/user/' . $user->uuid . '/addFriend', [
+            ->postJson('/api/users/' . $user->uuid . '/addFriend', [
                 'friend_uuid' => $otherUser->uuid
             ])
             ->assertStatus(Response::HTTP_OK);
 
         $user->refresh();
 
-        $this->assertEquals($otherUser->uuid, $user->friends->whereContains('friend_uuid', $otherUser->uuid));
+        $this->assertEquals($otherUser->uuid, $user->friends()->where('friend_id', $otherUser->id)->first()->uuid);
     }
 }
