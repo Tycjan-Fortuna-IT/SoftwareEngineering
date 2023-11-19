@@ -12,6 +12,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Hash;
 use App\Helpers\Managers\UserFriendManager;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -94,7 +95,27 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user): JsonResponse
     {
+        DB::beginTransaction();
+
+        DB::table('user_friend')
+            ->where('user_id', $user->id)
+            ->orWhere('friend_id', $user->id)
+            ->delete();
+        
+        $postIds = $user->posts()->pluck('id')->toArray();
+
+        DB::table('comments')
+            ->whereIn('post_id', $postIds)
+            ->delete();
+        
+        $user->comments()->delete();
+        $user->posts()->delete();
+        $user->tutorials()->delete();
+        $user->quests()->delete();
+        
         $user->delete();
+        
+        DB::commit();
 
         return response()->json(['message' => 'User deleted.'], 200);
     }

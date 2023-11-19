@@ -20,7 +20,7 @@ class FriendResource extends JsonResource
             'avatar' => $this->avatar,
             'level' => (int)$this->level,
             'experience' => (int)$this->experience,
-            'favorite' => (bool)$this->pivot->favorite,
+            'favourite' => (bool)$this->pivot->favourite,
         ];
     }
 }

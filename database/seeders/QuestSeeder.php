@@ -12,13 +12,13 @@ class QuestSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(int $count = 5): void
     {
         $users = User::all();
 
-        $users->each(function ($user) {
+        $users->each(function ($user) use ($count) {
             Quest::factory()
-                ->count(3)
+                ->count($count)
                 ->for($user)
                 ->create();
         });

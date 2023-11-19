@@ -12,12 +12,12 @@ class PostSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(int $count = 5): void
     {
         $users = User::all();
 
-        $users->each(function ($user) {
-            Post::factory()->count(5)->create([
+        $users->each(function ($user) use ($count) {
+            Post::factory()->count($count)->create([
                 'user_id' => $user->id,
             ]);
         });
