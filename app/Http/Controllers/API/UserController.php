@@ -101,20 +101,27 @@ class UserController extends Controller
             ->where('user_id', $user->id)
             ->orWhere('friend_id', $user->id)
             ->delete();
-        
+
         $postIds = $user->posts()->pluck('id')->toArray();
 
         DB::table('comments')
             ->whereIn('post_id', $postIds)
             ->delete();
-        
+
+        $quizesIds = $user->quizzes()->pluck('id')->toArray();
+
+        DB::table('question_quiz')
+            ->whereIn('quiz_id', $quizesIds)
+            ->delete();
+
         $user->comments()->delete();
         $user->posts()->delete();
         $user->tutorials()->delete();
         $user->quests()->delete();
-        
+        $user->quizzes()->delete();
+
         $user->delete();
-        
+
         DB::commit();
 
         return response()->json(['message' => 'User deleted.'], 200);

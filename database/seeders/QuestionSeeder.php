@@ -11,10 +11,10 @@ class QuestionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(int $count = 5): void
     {
         Question::factory()
-            ->count(25)
+            ->count($count)
             ->create();
     }
 }

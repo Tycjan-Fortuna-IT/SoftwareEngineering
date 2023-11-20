@@ -3,6 +3,8 @@
 namespace Tests;
 
 use Database\Seeders\CommentSeeder;
+use Database\Seeders\QuestSeeder;
+use Database\Seeders\QuestionSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\PostSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -27,9 +29,11 @@ abstract class TestCase extends BaseTestCase
 
 		Log::info('Seeding database using multiplier: ' . $multiplier . ' ...');
 
+        (new QuestionSeeder)->call(new QuestionSeeder(), false, ['count' => 20 * $multiplier]);
         (new UserSeeder)->call(new UserSeeder(), false, ['count' => 20 * $multiplier]);
         (new PostSeeder)->call(new PostSeeder(), false, ['count' => 20 * $multiplier]);
         (new CommentSeeder)->call(new CommentSeeder(), false, ['count' => 20 * $multiplier]);
+        (new QuestSeeder)->call(new QuestSeeder(), false, ['count' => 20 * $multiplier]);
 	}
 
     protected function tearDown():void
