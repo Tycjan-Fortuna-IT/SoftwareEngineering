@@ -140,4 +140,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Quest::class)->orderBy('type');
     }
+
+    /**
+     * Get all of the quizzes for the user.
+     *
+     * @return HasMany
+     */
+    public function quizzes() : HasMany
+    {
+        return $this->hasMany(Quiz::class);
+    }
 }

@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_friend', function (Blueprint $table) {
+        Schema::create('games', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->integer('limit')->default(4);
+            $table->integer('stage')->default(0);
+            $table->integer('level');
+            $table->integer('goal');
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('friend_id')->constrained('users');
-            $table->boolean('favourite')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_friend');
+        Schema::dropIfExists('games');
     }
 };

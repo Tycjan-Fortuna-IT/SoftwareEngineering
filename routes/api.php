@@ -4,6 +4,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\QuestController;
+use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\TutorialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -60,4 +61,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('/quests', QuestController::class);
 
+    Route::get('/quizzes/getRandom', [QuizController::class, 'getRandom']);
+    Route::apiResource('/quizzes', QuizController::class)->only(['index', 'update']);
+
 });
+
