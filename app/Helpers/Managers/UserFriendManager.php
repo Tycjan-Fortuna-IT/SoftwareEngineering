@@ -31,7 +31,9 @@ class UserFriendManager
      */
     public static function AddFriend(User $user, User $friend): void
     {
+        // relationship is bidirectional
         $user->friends()->attach($friend);
+        $friend->friends()->attach($user);
     }
 
     /**
@@ -44,6 +46,7 @@ class UserFriendManager
     public static function RemoveFriend(User $user, User $friend): void
     {
         $user->friends()->detach($friend);
+        $friend->friends()->detach($user);
     }
 
     /**

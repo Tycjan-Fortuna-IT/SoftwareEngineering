@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\Managers\UserLevelManager;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\QuestResource;
 use App\Models\Quest;
@@ -30,6 +31,9 @@ class QuestController extends Controller
             ->allowedFilters([
                 AllowedFilter::scope('user_uuid'),
             ])->get();
+
+        // Check if the user has 2 quests available 24h after the last quest was created
+        // If not generate new quest for each missing
 
         return QuestResource::collection($quests);
     }
@@ -84,9 +88,7 @@ class QuestController extends Controller
         if ($quest->collected >= $quest->required) {
             $quest->status = Quest::STATUS_COMPLETED;
 
-            $user = $quest->user;
-            $user->experience += $quest->reward;
-            $user->save();
+            UserLevelManager::AddExp($quest->user, $quest->reward);
         }
 
         $quest->save();
