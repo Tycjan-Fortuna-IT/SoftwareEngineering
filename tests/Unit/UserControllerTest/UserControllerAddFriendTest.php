@@ -10,7 +10,7 @@ class UserControllerAddFriendTest extends APIUnitTestCase
     public function test_users_add_friend_fails_already_existing_friend()
     {
         $user = $this->get_random_user();
-        
+
         $this->actingAs($user)
             ->postJson('/api/users/' . $user->uuid . '/addFriend', [
                 'friend_uuid' => $user->friends()->first()->uuid
@@ -32,7 +32,7 @@ class UserControllerAddFriendTest extends APIUnitTestCase
     public function test_users_add_friend_fails_validation()
     {
         $user = $this->get_random_user();
-        
+
         $this->actingAs($user)
             ->postJson('/api/users/' . $user->uuid . '/addFriend', [
                 'friend_uuid' => "..."
@@ -54,5 +54,6 @@ class UserControllerAddFriendTest extends APIUnitTestCase
         $user->refresh();
 
         $this->assertEquals($otherUser->uuid, $user->friends()->where('friend_id', $otherUser->id)->first()->uuid);
+        $this->assertEquals($user->uuid, $otherUser->friends()->where('friend_id', $user->id)->first()->uuid);
     }
 }

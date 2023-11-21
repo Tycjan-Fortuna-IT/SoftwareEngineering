@@ -11,7 +11,7 @@ class UserControllerRemoveFriendTest extends APIUnitTestCase
     {
         $user = $this->get_random_user();
         $friend = $this->prepare_user();
-        
+
         $this->actingAs($user)
             ->deleteJson('/api/users/' . $user->uuid . '/removeFriend', [
                 'friend_uuid' => $friend->uuid
@@ -33,7 +33,7 @@ class UserControllerRemoveFriendTest extends APIUnitTestCase
     public function test_users_remove_friend_fails_validation()
     {
         $user = $this->get_random_user();
-        
+
         $this->actingAs($user)
             ->deleteJson('/api/users/' . $user->uuid . '/removeFriend', [
                 'friend_uuid' => "@#$%"
@@ -57,6 +57,11 @@ class UserControllerRemoveFriendTest extends APIUnitTestCase
         $this->assertDatabaseMissing('user_friend', [
             'user_id' => $user->id,
             'friend_id' => $friend->id
+        ]);
+
+        $this->assertDatabaseMissing('user_friend', [
+            'user_id' => $friend->id,
+            'friend_id' => $user->id
         ]);
     }
 }

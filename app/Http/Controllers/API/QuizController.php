@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\Managers\UserLevelManager;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\QuizResource;
 use App\Models\Question;
@@ -11,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -50,7 +52,7 @@ class QuizController extends Controller
         $request->validate([
             'questions' => 'required|array|min:5|max:5',
             'questions.*.uuid' => 'required|uuid|exists:questions,uuid',
-            'questions.*.answer' => 'required|integer|between:1,4',
+            'questions.*.answer' => 'required|integer|between:0,4',
         ]);
 
         $questions = $quiz->questions()->get();
@@ -59,30 +61,44 @@ class QuizController extends Controller
         $response['result'] = [];
 
         $result = 0;
+        $exp = 0;
+
+        $questionsByUuid = array_column($request->questions, null, 'uuid');
 
         foreach ($questions as $question) {
-            foreach ($request->questions as $q) {
+            if (isset($questionsByUuid[$question->uuid])) {
+                $q = $questionsByUuid[$question->uuid];
+                $isCorrect = $question->correct == $q["answer"];
 
-                if ($question->uuid == $q["uuid"]) {
-                    $isCorrect = $question->pivot->answer == $q["answer"] ? true : false;
-
-                    if ($isCorrect) $result++; // TODO: ADD POINTS to the user, needs to be heavily tested ASAP
-
-                    $response['result'][] = [
-                        'uuid' => $question->uuid,
-                        'correct_answer' => $question->pivot->answer,
-                        'user_answer' => $q["answer"],
-                        'is_correct' => $isCorrect
-                    ];
+                if ($isCorrect) {
+                    $result++;
+                    $exp += $question->prize;
                 }
 
+                $response['result'][] = [
+                    'uuid' => $question->uuid,
+                    'correct_answer' => $question->correct,
+                    'user_answer' => $q["answer"],
+                    'is_correct' => $isCorrect
+                ];
+
+                $quiz->questions()->updateExistingPivot($question->id, [
+                    'answer' => $q["answer"],
+                    'updated_at' => Carbon::now()
+                ]);
             }
         }
 
+        UserLevelManager::AddExp(Auth::user(), $exp);
+
         $response['info'] = [
             'correct_answers' => $result,
-            'result' => $result / $questions->count() * 100
+            'result' => $result / $questions->count() * 100,
+            'experience' => $exp,
         ];
+
+        $quiz->result = $response['info']['result'];
+        $quiz->save();
 
         return response()->json([
             'data' => $response
