@@ -33,7 +33,7 @@ abstract class TestCase extends BaseTestCase
         (new UserSeeder)->call(new UserSeeder(), false, ['count' => 20 * $multiplier]);
         (new PostSeeder)->call(new PostSeeder(), false, ['count' => 20 * $multiplier]);
         (new CommentSeeder)->call(new CommentSeeder(), false, ['count' => 20 * $multiplier]);
-        (new QuestSeeder)->call(new QuestSeeder(), false, ['count' => 20 * $multiplier]);
+        // (new QuestSeeder)->call(new QuestSeeder(), false, ['count' => 20 * $multiplier]); // commented on purpose, do not change for now
 	}
 
     protected function tearDown():void

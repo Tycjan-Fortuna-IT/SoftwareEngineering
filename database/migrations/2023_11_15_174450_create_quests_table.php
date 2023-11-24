@@ -16,11 +16,12 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->integer('type');
             $table->integer('status');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('required');
             $table->integer('collected');
             $table->integer('reward');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
