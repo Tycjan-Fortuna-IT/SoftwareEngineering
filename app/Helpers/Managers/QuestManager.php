@@ -4,6 +4,7 @@ namespace App\Helpers\Managers;
 
 use App\Models\Quest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -11,26 +12,31 @@ use Illuminate\Support\Facades\DB;
 class QuestManager
 {
     /**
+     * The number of quests a user should have at any given time.
+     */
+    const QUEST_COUNT = 2;
+
+    /**
      * Get or generate quests for the user.
      *
      * @return Collection
      */
     public static function GetOrGenerateQuestsForUser(): Collection
     {
-        $user = Auth::user();
+        $user = User::whereId(Auth::id())->firstOrFail();
         $quests = $user->quests;
 
         DB::beginTransaction();
 
-        $quests->where('created_at', '<', now()->subDay())
-            ->where('status', '!=', Quest::STATUS_IN_PROGRESS)
-            ->each(function (Quest $quest) {
-                $quest->delete();
-            });
+        Quest::where('created_at', '<', Carbon::now()->subDay())
+            ->orWhere('status', '!=', Quest::STATUS_IN_PROGRESS)
+            ->delete();
+
+        $user->refresh();
 
         $quests = $user->quests;
 
-        for ($i = $quests->count(); $i < 3; $i++) {
+        for ($i = $quests->count(); $i < self::QUEST_COUNT; $i++) {
             $quest = self::GenerateQuestForUser($user);
 
             $quests->push($quest);
@@ -48,7 +54,7 @@ class QuestManager
         return Quest::create([
             'type' => fake()->numberBetween(1, 7),
             'status' => Quest::STATUS_IN_PROGRESS,
-            'required' => fake()->numberBetween(1, 10),
+            'required' => fake()->numberBetween(10, 50),
             'collected' => 0,
             'reward' => fake()->numberBetween(100, 1000),
             'user_id' => $user->id,
