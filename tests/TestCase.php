@@ -23,11 +23,7 @@ abstract class TestCase extends BaseTestCase
 
 		$multiplier = 1;
 
-		Log::info('Refreshing database...');
-
 		Artisan::call('migrate:refresh');
-
-		Log::info('Seeding database using multiplier: ' . $multiplier . ' ...');
 
         (new QuestionSeeder)->call(new QuestionSeeder(), false, ['count' => 20 * $multiplier]);
         (new UserSeeder)->call(new UserSeeder(), false, ['count' => 20 * $multiplier]);

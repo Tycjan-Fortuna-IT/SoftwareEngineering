@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\GameController;
 use App\Http\Controllers\API\QuestController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\TutorialController;
@@ -63,6 +64,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/quizzes/getRandom', [QuizController::class, 'getRandom']);
     Route::apiResource('/quizzes', QuizController::class)->only(['index', 'update']);
+
+    Route::apiResource('/games', GameController::class)->only(['store', 'update']);
 
 });
 

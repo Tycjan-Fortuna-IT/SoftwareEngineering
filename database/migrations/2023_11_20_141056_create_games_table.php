@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('limit')->default(4);
             $table->integer('stage')->default(0);
             $table->integer('level');
-            $table->integer('goal');
+            // $table->integer('goal')->default(0);
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
             $table->softDeletes();

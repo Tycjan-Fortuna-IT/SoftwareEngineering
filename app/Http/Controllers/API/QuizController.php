@@ -10,36 +10,9 @@ use App\Models\Quiz;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
-
 class QuizController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return ResourceCollection|JsonResponse
-     */
-    public function index(Request $request): ResourceCollection|JsonResponse
-    {
-        if (!$request->has('filter.user_uuid')) {
-            return response()->json(['message' => 'Missing filter[user_uuid], it is required.'], 400);
-        }
-
-        $quizzes = QueryBuilder::for(Quiz::class)
-            ->allowedFilters([
-                AllowedFilter::scope('user_uuid'),
-            ])
-            ->where('created_at', '>=', now()->subDay())
-            ->get();
-
-        return QuizResource::collection($quizzes);
-    }
-
     /**
      * Update the specified resource in storage.
      *

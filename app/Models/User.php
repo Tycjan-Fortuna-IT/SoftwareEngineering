@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use \Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -149,5 +150,27 @@ class User extends Authenticatable
     public function quizzes() : HasMany
     {
         return $this->hasMany(Quiz::class);
+    }
+
+    /**
+     * Get all games for the user as a host. (if any, includes finished games)
+     *
+     * @return ?HasMany
+     */
+    public function hostGames() : ?HasMany
+    {
+        return $this->hasMany(Game::class, 'user_id');
+    }
+
+    /**
+     * Get all games for the user as a guest. (if any, includes finished games)
+     *
+     * @return ?BelongsToMany
+     */
+    public function guestGames() : ?BelongsToMany
+    {
+        return $this->belongsToMany(Game::class, 'game_user', 'user_id', 'game_id')
+                    ->withPivot('collected_points')
+                    ->withTimestamps();
     }
 }
