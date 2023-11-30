@@ -13,8 +13,10 @@ class QuestionSeeder extends Seeder
      */
     public function run(int $count = 5): void
     {
-        Question::factory()
-            ->count($count)
-            ->create();
+        $questionPool = include app_path('Helpers/QuestionPool.php');
+
+        foreach ($questionPool as $question) {
+            Question::create($question);
+        }
     }
 }
