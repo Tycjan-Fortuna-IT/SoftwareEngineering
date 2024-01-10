@@ -4,15 +4,16 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\GameController;
+use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\QuestController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\TutorialController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Resources\API\UserResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 /*
@@ -66,7 +67,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/quizzes/getRandom', [QuizController::class, 'getRandom']);
     Route::apiResource('/quizzes', QuizController::class)->only(['index', 'update']);
 
-    Route::apiResource('/games', GameController::class)->only(['store', 'update']);
+    Route::apiResource('/games', GameController::class)->only(['store', 'update', 'destroy']);
+
+    Route::apiResource('/notifications', NotificationController::class)->only(['index', 'update']);
 
 });
 

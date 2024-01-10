@@ -207,4 +207,27 @@ class GameController extends Controller
 
         return response()->json(['message' => 'Game updated successfully'], 200);
     }
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Game $game
+     * @return JsonResponse
+     */
+    public function destroy(Game $game): JsonResponse
+    {
+        DB::beginTransaction();
+
+        DB::table('game_user')->where('game_id', $game->id)->delete();
+
+        $game->stage = Game::CANCELLED;
+        $game->save();
+
+        $game->delete();
+
+        DB::commit();
+
+        return response()->json(['message' => 'Game deleted successfully'], 200);
+    }
 }

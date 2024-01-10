@@ -153,6 +153,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all of the not seen notifications for the user.
+     *
+     * @return HasMany
+     */
+    public function notifications() : HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
      * Get all games for the user as a host. (if any, includes finished games)
      *
      * @return ?HasMany
