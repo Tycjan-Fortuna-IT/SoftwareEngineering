@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\MessageSentSocketEvent;
+use App\Events\MyEvent;
 use App\Helpers\PaginationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\UserResource;
@@ -12,6 +14,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Hash;
 use App\Helpers\Managers\UserFriendManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -182,5 +185,26 @@ class UserController extends Controller
         UserFriendManager::UpdateFavourite($user, $friend, $request->favourite);
 
         return response()->json(['message' => 'Favourite status updated.'], 200);
+    }
+
+    /**
+     * Send a message to the specified user.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function sendMessage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'receiver_uuid' => 'required|uuid|exists:users,uuid',
+            'message' => 'required|string',
+        ]);
+
+        $sender = User::whereId(Auth::id())->first();
+        $receiver = User::where('uuid', $request->receiver_uuid)->first();
+
+        event(new MessageSentSocketEvent($sender->uuid, $receiver->uuid, $request->message));
+
+        return response()->json(['message' => 'Message sent.'], 200);
     }
 }
