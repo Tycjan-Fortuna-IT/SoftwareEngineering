@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 use \Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use \Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -183,4 +183,60 @@ class User extends Authenticatable
                     ->withPivot('collected_points')
                     ->withTimestamps();
     }
+
+    /**
+     * Scope a query to search friends.
+     *
+     * @param Builder $query
+     * @param string $search
+     * @return Builder
+     */
+    public function scopeSearch(Builder $query, string $search): Builder
+    {
+        return $query->where('name', 'ilike', '%' . $search . '%')
+                     ->orWhere('email', 'ilike', '%' . $search . '%');
+    }
+
+    /**
+     * Scope a query to search for not friends.
+     *
+     * @param Builder $query
+     * @param string $search
+     * @return Builder
+     */
+    public function scopeSearchNotFriend(Builder $query, string $search): Builder
+    {
+        $userId = auth()->user()->id;
+
+        return $query->where(function (Builder $query) use ($search) {
+            $query->where('name', 'ilike', '%' . $search . '%')
+                  ->orWhere('email', 'ilike', '%' . $search . '%');
+        })->whereNotIn('id', function ($subQuery) use ($userId) {
+            $subQuery->select('friend_id')
+                     ->from('user_friend')
+                     ->where('user_id', $userId);
+        });
+    }
+
+    /**
+     * Scope a query to include only not friends.
+     *
+     * @param Builder $query
+     * @param string $search
+     * @return Builder
+     */
+    public function scopeNotFriend(Builder $query, bool $filter): Builder
+    {
+        if (!$filter)
+            return $query;
+
+        $userId = auth()->user()->id;
+
+        return $query->whereNotIn('id', function ($subQuery) use ($userId) {
+            $subQuery->select('friend_id')
+                     ->from('user_friend')
+                     ->where('user_id', $userId);
+        });
+    }
+
 }

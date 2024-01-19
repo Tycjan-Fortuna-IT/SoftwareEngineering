@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Helpers\Managers\UserFriendManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class UserController extends Controller
 {
@@ -27,7 +28,12 @@ class UserController extends Controller
      */
     public function index(Request $request): ResourceCollection
     {
-        $users = QueryBuilder::for(User::class);
+        $users = QueryBuilder::for(User::class)
+            ->allowedFilters(
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('search_not_friend'),
+                AllowedFilter::scope('not_friend'),
+            );
 
         PaginationHelper::Paginate($users, $request);
 
@@ -105,6 +111,7 @@ class UserController extends Controller
         $user->tutorials()->delete();
         $user->quests()->delete();
         $user->quizzes()->delete();
+        $user->notifications()->delete();
 
         $user->delete();
 
