@@ -15,6 +15,7 @@ class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
+
      *
      * @param Request $request
      * @return ResourceCollection
@@ -40,25 +41,25 @@ class NotificationController extends Controller
     public function update(Request $request, Notification $notification): JsonResponse
     {
         $request->validate([
-            'seen' => 'required|boolean',
+            'accept' => 'required|boolean',
         ]);
 
-        switch ($notification->type) {
-            case Notification::FRIEND_REQUEST:
-                // TODO
-                break;
-            case Notification::GAME_INVITE:
-                // TODO
-                break;
-            default:
-                return response()->json([
-                    'message' => 'Not supported notification type',
-                ], 400);
-        }
+        // switch ($notification->type) {
+        //     case Notification::FRIEND_REQUEST:
+        //         // TODO
+        //         break;
+        //     case Notification::GAME_INVITE:
+        //         // TODO
+        //         break;
+        //     default:
+        //         return response()->json([
+        //             'message' => 'Not supported notification type',
+        //         ], 400);
+        // }
 
-        // $notification->update([
-        //     'seen' => true,
-        // ]);
+        $notification->update([
+            'seen' => true,
+        ]);
 
         return response()->json([
             'message' => 'Not yet implemented',
