@@ -54,10 +54,40 @@ class QuestManager
         return Quest::create([
             'type' => fake()->numberBetween(1, 7),
             'status' => Quest::STATUS_IN_PROGRESS,
-            'required' => fake()->numberBetween(10, 50),
+            'required' => fake()->numberBetween(1, 3),
             'collected' => 0,
-            'reward' => fake()->numberBetween(100, 1000),
+            'reward' => fake()->numberBetween(100, 500),
             'user_id' => $user->id,
         ]);
+    }
+
+    /**
+     * Progress a quest for the user.
+     *
+     * @param User $user
+     * @param int $level The game level
+     */
+    public static function ProgressQuestForUser(User $user, int $level): void
+    {
+        DB::beginTransaction();
+
+        $userQuests = $user->quests()
+            ->where('status', Quest::STATUS_IN_PROGRESS)
+            ->where('type', $level)
+            ->get();
+
+        foreach ($userQuests as $quest) {
+            $quest->collected++;
+
+            if ($quest->collected >= $quest->required) {
+                $quest->status = Quest::STATUS_COMPLETED;
+
+                UserLevelManager::AddExp($user, $quest->reward);
+            }
+
+            $quest->save();
+        }
+
+        DB::commit();
     }
 }

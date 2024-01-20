@@ -23,6 +23,7 @@ class NotificationController extends Controller
     public function index(Request $request): ResourceCollection
     {
         $user = User::whereId(Auth::id())->firstOrFail();
+
         $notifications = $user->notifications()
             ->where('seen', false)
             ->latest()

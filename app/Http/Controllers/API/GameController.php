@@ -6,6 +6,8 @@ use App\Events\GameFinishedSocketEvent;
 use App\Events\GameStartedSocketEvent;
 use App\Events\GameUpdateSocketEvent;
 use App\Events\PlayerJoinedSocketEvent;
+use App\Helpers\Managers\GameManager;
+use App\Helpers\Managers\QuestManager;
 use App\Helpers\Managers\UserLevelManager;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\GameResource;
@@ -15,7 +17,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
@@ -35,6 +36,8 @@ class GameController extends Controller
         $user = User::whereId(Auth::id())
             ->with('hostGames', 'guestGames')
             ->firstOrFail();
+
+        GameManager::FindAndDeleteInactiveGames();
 
         if ($user->hostGames()->whereIn('stage', [Game::LOBBY, Game::PLAYING])->count() > 0) {
             return response()->json([
@@ -78,6 +81,9 @@ class GameController extends Controller
             'points' => 'nullable|integer',
         ]);
 
+        // If the game is not updated for 7 minutes we terminate the game
+        GameManager::FindAndDeleteInactiveGames();
+
         if (isset($request->stage) && isset($request->joiner_uuid)) {
             return response()->json(['message' => 'e003 - Only one operation at a time is allowed'], 400);
         }
@@ -89,8 +95,6 @@ class GameController extends Controller
         if ($game->stage == Game::CANCELLED) {
             return response()->json(['message' => 'e005 - This game has already been cancelled'], 400);
         }
-
-        // TODO: game activity check, if no activity for 5 minutes, cancel and close the game
 
         switch($game->stage) {
             case Game::LOBBY:
@@ -185,7 +189,13 @@ class GameController extends Controller
                         'progress' => $collectedPoints / $game->goal,
                     ]));
 
-                    if ($collectedPoints >= $game->goal) {
+                    // Game finish conditions:
+                    // 1. Goal has been reached
+                    // 2. 3 minutes have passed since the game started
+                    if (
+                        $collectedPoints >= $game->goal ||
+                        $game->updated_at->addMinutes(3) <= now()
+                    ) {
                         $game->stage = Game::FINISHED;
                         $game->save();
 
@@ -193,9 +203,9 @@ class GameController extends Controller
 
                         foreach ($game->users()->get() as $player) {
                             UserLevelManager::AddExp($player, $player->pivot->collected_points * $game->expModifier);
+                            QuestManager::ProgressQuestForUser($player, $game->level);
                         }
                     }
-
                 }
 
                 break;

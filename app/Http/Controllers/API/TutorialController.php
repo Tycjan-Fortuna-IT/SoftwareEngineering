@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\TutorialResource;
 use App\Models\Tutorial;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -21,14 +23,9 @@ class TutorialController extends Controller
      */
     public function index(Request $request): ResourceCollection|JsonResponse
     {
-        if (!$request->has('filter.user_uuid')) {
-            return response()->json(['message' => 'Missing filter[user_uuid], it is required.'], 400);
-        }
+        $user = User::whereId(Auth::id())->firstOrFail();
 
-        $tutorials = QueryBuilder::for(Tutorial::class)
-            ->allowedFilters([
-                AllowedFilter::scope('user_uuid'),
-            ])->get();
+        $tutorials = $user->tutorials()->get();
 
         return TutorialResource::collection($tutorials);
     }

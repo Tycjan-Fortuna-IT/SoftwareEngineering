@@ -222,7 +222,7 @@ class User extends Authenticatable
      * Scope a query to include only not friends.
      *
      * @param Builder $query
-     * @param string $search
+     * @param bool $filter
      * @return Builder
      */
     public function scopeNotFriend(Builder $query, bool $filter): Builder
