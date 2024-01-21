@@ -15,9 +15,13 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
+            $table->text('avatar')->nullable();
+            $table->text('about')->nullable();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('level')->default(0);
+            $table->integer('experience')->default(0);
+            $table->boolean('anonymous')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

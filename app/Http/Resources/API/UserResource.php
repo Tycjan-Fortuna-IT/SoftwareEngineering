@@ -17,7 +17,13 @@ class UserResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
+            'avatar' => $this->avatar,
+            'about' => $this->about,
             'email' => $this->email,
+            'level' => (int)$this->level,
+            'experience' => (int)$this->experience,
+            'anonymous' => (bool)$this->anonymous,
+            'friends' => FriendResource::collection($this->whenLoaded('friends')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
