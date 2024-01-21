@@ -29,11 +29,11 @@ class Game extends Model
     public const GAME_7 = 7;
 
     // Game goals TODO: specify actual values for each game
-    private const GAME_1_GOAL = 10;
+    private const GAME_1_GOAL = 30;
     private const GAME_2_GOAL = 20;
-    private const GAME_3_GOAL = 30;
+    private const GAME_3_GOAL = 75;
     private const GAME_4_GOAL = 40;
-    private const GAME_5_GOAL = 50;
+    private const GAME_5_GOAL = 150;
     private const GAME_6_GOAL = 60;
     private const GAME_7_GOAL = 70;
 
