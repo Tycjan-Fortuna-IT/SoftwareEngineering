@@ -183,4 +183,23 @@ class AssertableJson extends BaseAssertableJson
 
         return $this;
     }
+
+    /**
+     * Works as whereType() but for nullable properties.
+     *
+     * @param string $key The property key.
+     * @param string $type The type.
+     * @return static
+     * @throws PHPUnit\Framework\ExpectationFailedException
+     */
+    public function whereNullableType(string $key, string $type): static
+    {
+        if ($this->prop($key) != null) {
+            $this->whereType($key, $type);
+
+            $this->interactsWith($key);
+        }
+
+        return $this;
+    }
 }

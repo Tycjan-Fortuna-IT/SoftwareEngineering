@@ -15,8 +15,8 @@ class TutorialControllerIndexTest extends APIUnitTestCase
             ->assertStatus(Response::HTTP_OK)
             ->assertJson(function (AssertableJson $json) {
 				$json->has('data', function (AssertableJson $data) {
-					$data->each(function (AssertableJson $user) {
-						TutorialResourceValidator::validate($user);
+					$data->each(function (AssertableJson $tutorial) {
+						TutorialResourceValidator::validate($tutorial);
 					});
 				});
 			});

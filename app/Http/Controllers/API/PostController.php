@@ -63,7 +63,7 @@ class PostController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'image' => 'required|string',
+            'image' => 'nullable|string',
             'title' => 'required|string',
             'description' => 'required|string',
         ]);
@@ -71,7 +71,7 @@ class PostController extends Controller
         $user = Auth::user();
 
         $post = Post::create([
-            'image' => $request->image,
+            'image' => $request->image ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => $user->id,
@@ -101,6 +101,8 @@ class PostController extends Controller
         $post->image = $request->image ?? $post->image;
         $post->title = $request->title ?? $post->title;
         $post->description = $request->description ?? $post->description;
+
+        $post->save();
 
         return response()->json(['message' => 'Post updated successfully'], 200);
     }
