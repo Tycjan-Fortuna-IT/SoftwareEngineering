@@ -52,6 +52,15 @@ class UserControllerAddFriendTest extends APIUnitTestCase
             ->assertStatus(Response::HTTP_OK);
 
         $user->refresh();
+        $otherUser->refresh();
+
+        $notification = $otherUser->notifications()->first();
+
+        $this->actingAs($otherUser)
+            ->putJson('/api/notifications/' . $notification->uuid, [
+                'accept' => true
+            ])
+            ->assertStatus(Response::HTTP_OK);
 
         $this->assertEquals($otherUser->uuid, $user->friends()->where('friend_id', $otherUser->id)->first()->uuid);
         $this->assertEquals($user->uuid, $otherUser->friends()->where('friend_id', $user->id)->first()->uuid);

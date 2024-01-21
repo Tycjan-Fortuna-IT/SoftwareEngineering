@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Events\MessageSentSocketEvent;
 use App\Events\MyEvent;
+use App\Helpers\Managers\NotificationManager;
 use App\Helpers\PaginationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\UserResource;
@@ -14,6 +15,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Facades\Hash;
 use App\Helpers\Managers\UserFriendManager;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -139,8 +141,10 @@ class UserController extends Controller
             return response()->json(['message' => 'This user is already your friend!'], 400);
         }
 
-        // TODO: Add notification to the friend.
-        UserFriendManager::AddFriend($user, $friend);
+        NotificationManager::Notify($friend, Notification::FRIEND_REQUEST, [
+            'user_uuid' => $user->uuid,
+            'friend_uuid' => $friend->uuid,
+        ]);
 
         return response()->json(['message' => 'Friend added.'], 200);
     }
@@ -213,5 +217,27 @@ class UserController extends Controller
         event(new MessageSentSocketEvent($sender->uuid, $receiver->uuid, $request->message));
 
         return response()->json(['message' => 'Message sent.'], 200);
+    }
+
+    /**
+     * Send a game invite to the specified user.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function sendGameInvite(Request $request): JsonResponse
+    {
+        $request->validate([
+            'receiver_uuid' => 'required|uuid',
+            'game_uuid' => 'required|uuid',
+        ]);
+
+        $receiver = User::where('uuid', $request->receiver_uuid)->first();
+
+        NotificationManager::Notify($receiver, Notification::GAME_INVITE, [
+            'game_uuid' => $request->game_uuid,
+        ]);
+
+        return response()->json(['message' => 'Game invite sent.'], 200);
     }
 }

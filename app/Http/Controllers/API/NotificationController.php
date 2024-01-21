@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\Managers\UserFriendManager;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\NotificationResource;
 use App\Models\Notification;
@@ -10,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -45,25 +47,36 @@ class NotificationController extends Controller
             'accept' => 'required|boolean',
         ]);
 
-        // switch ($notification->type) {
-        //     case Notification::FRIEND_REQUEST:
-        //         // TODO
-        //         break;
-        //     case Notification::GAME_INVITE:
-        //         // TODO
-        //         break;
-        //     default:
-        //         return response()->json([
-        //             'message' => 'Not supported notification type',
-        //         ], 400);
-        // }
-
         $notification->update([
             'seen' => true,
         ]);
 
+        if ($request->accept) {
+            $payload = json_decode($notification->payload, true);
+            switch ($notification->type) {
+                case Notification::FRIEND_REQUEST:
+                    $friend = User::whereUuid($payload['friend_uuid'])->firstOrFail();
+                    $user = User::whereUuid($payload['user_uuid'])->firstOrFail();
+
+                    UserFriendManager::AddFriend($user, $friend);
+
+                    break;
+                case Notification::GAME_INVITE:
+                    return response()->json([
+                        'message' => 'Notification updated.',
+                        'game_uuid' => $payload['game_uuid'],
+                    ]);
+
+                    break;
+                default:
+                    return response()->json([
+                        'message' => 'Not supported notification type',
+                    ], 400);
+            }
+        }
+
         return response()->json([
-            'message' => 'Not yet implemented',
+            'message' => 'Notification updated.',
         ]);
     }
 }

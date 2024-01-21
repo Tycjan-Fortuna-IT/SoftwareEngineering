@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/users/{user}/removeFriend', [UserController::class, 'removeFriend']);
     Route::put('/users/{user}/updateFavourite', [UserController::class, 'updateFavourite']);
     Route::post('/users/sendMessage', [UserController::class, 'sendMessage']);
+    Route::post('/users/sendGameInvite', [UserController::class, 'sendGameInvite']);
 
     Route::apiResource('/posts', PostController::class);
 
